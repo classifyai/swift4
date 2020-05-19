@@ -1,12 +1,14 @@
 # DefaultAPI
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.classifyai.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createNewModel**](DefaultAPI.md#createnewmodel) | **PUT** /models | Create New Model
 [**deleteModel**](DefaultAPI.md#deletemodel) | **DELETE** /models | Delete Model
 [**getModelsList**](DefaultAPI.md#getmodelslist) | **GET** /models | Get Models List
+[**indexByImageUrl**](DefaultAPI.md#indexbyimageurl) | **GET** /index_by_image_url | Index by Using Image URL
+[**indexImage**](DefaultAPI.md#indeximage) | **POST** /index_image | Index Local Image
 [**tagImageByUrl**](DefaultAPI.md#tagimagebyurl) | **GET** /predict_by_image_url | Tag Image by Using Image Url
 [**tagLocalImage**](DefaultAPI.md#taglocalimage) | **POST** /predict | Predict by Image
 [**updateModel**](DefaultAPI.md#updatemodel) | **POST** /models | Update Model
@@ -114,7 +116,7 @@ Void (empty response body)
 
 # **getModelsList**
 ```swift
-    open class func getModelsList(completion: @escaping (_ data: Void?, _ error: Error?) -> Void)
+    open class func getModelsList(completion: @escaping (_ data: String?, _ error: Error?) -> Void)
 ```
 
 Get Models List
@@ -145,7 +147,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-Void (empty response body)
+**String**
 
 ### Authorization
 
@@ -154,6 +156,110 @@ Void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **indexByImageUrl**
+```swift
+    open class func indexByImageUrl(modelId: String, imageUrl: String, completion: @escaping (_ data: String?, _ error: Error?) -> Void)
+```
+
+Index by Using Image URL
+
+Index by Using Image URL
+
+### Example 
+```swift
+// The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
+import OpenAPIClient
+
+let modelId = "modelId_example" // String | Model ID
+let imageUrl = "imageUrl_example" // String | Image URL
+
+// Index by Using Image URL
+DefaultAPI.indexByImageUrl(modelId: modelId, imageUrl: imageUrl) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
+    }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **modelId** | **String** | Model ID | 
+ **imageUrl** | **String** | Image URL | 
+
+### Return type
+
+**String**
+
+### Authorization
+
+[x-api-key](../README.md#x-api-key)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **indexImage**
+```swift
+    open class func indexImage(modelId: String, file: URL? = nil, completion: @escaping (_ data: String?, _ error: Error?) -> Void)
+```
+
+Index Local Image
+
+Index Local Image
+
+### Example 
+```swift
+// The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
+import OpenAPIClient
+
+let modelId = "modelId_example" // String | Model ID
+let file = URL(string: "https://example.com")! // URL |  (optional)
+
+// Index Local Image
+DefaultAPI.indexImage(modelId: modelId, file: file) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
+    }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **modelId** | **String** | Model ID | 
+ **file** | **URL** |  | [optional] 
+
+### Return type
+
+**String**
+
+### Authorization
+
+[x-api-key](../README.md#x-api-key)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

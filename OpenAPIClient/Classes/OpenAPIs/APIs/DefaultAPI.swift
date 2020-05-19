@@ -97,13 +97,9 @@ open class DefaultAPI {
      
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func getModelsList(completion: @escaping ((_ data: Void?,_ error: Error?) -> Void)) {
+    open class func getModelsList(completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
         getModelsListWithRequestBuilder().execute { (response, error) -> Void in
-            if error == nil {
-                completion((), error)
-            } else {
-                completion(nil, error)
-            }
+            completion(response?.body, error)
         }
     }
 
@@ -114,18 +110,102 @@ open class DefaultAPI {
      - API Key:
        - type: apiKey x-api-key 
        - name: x-api-key
-     - returns: RequestBuilder<Void> 
+     - returns: RequestBuilder<String> 
      */
-    open class func getModelsListWithRequestBuilder() -> RequestBuilder<Void> {
+    open class func getModelsListWithRequestBuilder() -> RequestBuilder<String> {
         let path = "/models"
         let URLString = OpenAPIClientAPI.basePath + path
         let parameters: [String:Any]? = nil
         
         let url = URLComponents(string: URLString)
 
-        let requestBuilder: RequestBuilder<Void>.Type = OpenAPIClientAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<String>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
 
         return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
+    }
+
+    /**
+     Index by Using Image URL
+     
+     - parameter modelId: (query) Model ID 
+     - parameter imageUrl: (query) Image URL 
+     - parameter completion: completion handler to receive the data and the error objects
+     */
+    open class func indexByImageUrl(modelId: String, imageUrl: String, completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
+        indexByImageUrlWithRequestBuilder(modelId: modelId, imageUrl: imageUrl).execute { (response, error) -> Void in
+            completion(response?.body, error)
+        }
+    }
+
+    /**
+     Index by Using Image URL
+     - GET /index_by_image_url
+     - Index by Using Image URL
+     - API Key:
+       - type: apiKey x-api-key 
+       - name: x-api-key
+     - parameter modelId: (query) Model ID 
+     - parameter imageUrl: (query) Image URL 
+     - returns: RequestBuilder<String> 
+     */
+    open class func indexByImageUrlWithRequestBuilder(modelId: String, imageUrl: String) -> RequestBuilder<String> {
+        let path = "/index_by_image_url"
+        let URLString = OpenAPIClientAPI.basePath + path
+        let parameters: [String:Any]? = nil
+        
+        var url = URLComponents(string: URLString)
+        url?.queryItems = APIHelper.mapValuesToQueryItems([
+            "model_id": modelId.encodeToJSON(), 
+            "image_url": imageUrl.encodeToJSON()
+        ])
+
+        let requestBuilder: RequestBuilder<String>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
+
+        return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
+    }
+
+    /**
+     Index Local Image
+     
+     - parameter modelId: (query) Model ID 
+     - parameter file: (form)  (optional)
+     - parameter completion: completion handler to receive the data and the error objects
+     */
+    open class func indexImage(modelId: String, file: URL? = nil, completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
+        indexImageWithRequestBuilder(modelId: modelId, file: file).execute { (response, error) -> Void in
+            completion(response?.body, error)
+        }
+    }
+
+    /**
+     Index Local Image
+     - POST /index_image
+     - Index Local Image
+     - API Key:
+       - type: apiKey x-api-key 
+       - name: x-api-key
+     - parameter modelId: (query) Model ID 
+     - parameter file: (form)  (optional)
+     - returns: RequestBuilder<String> 
+     */
+    open class func indexImageWithRequestBuilder(modelId: String, file: URL? = nil) -> RequestBuilder<String> {
+        let path = "/index_image"
+        let URLString = OpenAPIClientAPI.basePath + path
+        let formParams: [String:Any?] = [
+            "file": file?.encodeToJSON()
+        ]
+
+        let nonNullParameters = APIHelper.rejectNil(formParams)
+        let parameters = APIHelper.convertBoolToString(nonNullParameters)
+        
+        var url = URLComponents(string: URLString)
+        url?.queryItems = APIHelper.mapValuesToQueryItems([
+            "model_id": modelId.encodeToJSON()
+        ])
+
+        let requestBuilder: RequestBuilder<String>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
+
+        return requestBuilder.init(method: "POST", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
     }
 
     /**
