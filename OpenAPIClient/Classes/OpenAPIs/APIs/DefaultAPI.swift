@@ -127,52 +127,51 @@ open class DefaultAPI {
     /**
      Index by Using Image URL
      
-     - parameter modelId: (query) Model ID 
-     - parameter imageUrl: (query) Image URL 
+     - parameter inlineObject: (body)  
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func indexByImageUrl(modelId: String, imageUrl: String, completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
-        indexByImageUrlWithRequestBuilder(modelId: modelId, imageUrl: imageUrl).execute { (response, error) -> Void in
-            completion(response?.body, error)
+    open class func indexByImageUrl(inlineObject: InlineObject, completion: @escaping ((_ data: Void?,_ error: Error?) -> Void)) {
+        indexByImageUrlWithRequestBuilder(inlineObject: inlineObject).execute { (response, error) -> Void in
+            if error == nil {
+                completion((), error)
+            } else {
+                completion(nil, error)
+            }
         }
     }
 
     /**
      Index by Using Image URL
-     - GET /index_by_image_url
+     - POST /index_by_image_url
      - Index by Using Image URL
      - API Key:
        - type: apiKey x-api-key 
        - name: x-api-key
-     - parameter modelId: (query) Model ID 
-     - parameter imageUrl: (query) Image URL 
-     - returns: RequestBuilder<String> 
+     - parameter inlineObject: (body)  
+     - returns: RequestBuilder<Void> 
      */
-    open class func indexByImageUrlWithRequestBuilder(modelId: String, imageUrl: String) -> RequestBuilder<String> {
+    open class func indexByImageUrlWithRequestBuilder(inlineObject: InlineObject) -> RequestBuilder<Void> {
         let path = "/index_by_image_url"
         let URLString = OpenAPIClientAPI.basePath + path
-        let parameters: [String:Any]? = nil
-        
-        var url = URLComponents(string: URLString)
-        url?.queryItems = APIHelper.mapValuesToQueryItems([
-            "model_id": modelId.encodeToJSON(), 
-            "image_url": imageUrl.encodeToJSON()
-        ])
+        let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: inlineObject)
 
-        let requestBuilder: RequestBuilder<String>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
+        let url = URLComponents(string: URLString)
 
-        return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
+        let requestBuilder: RequestBuilder<Void>.Type = OpenAPIClientAPI.requestBuilderFactory.getNonDecodableBuilder()
+
+        return requestBuilder.init(method: "POST", URLString: (url?.string ?? URLString), parameters: parameters, isBody: true)
     }
 
     /**
      Index Local Image
      
-     - parameter modelId: (query) Model ID 
+     - parameter modelId: (form)  (optional)
+     - parameter tag: (form)  (optional)
      - parameter file: (form)  (optional)
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func indexImage(modelId: String, file: URL? = nil, completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
-        indexImageWithRequestBuilder(modelId: modelId, file: file).execute { (response, error) -> Void in
+    open class func indexImage(modelId: String? = nil, tag: String? = nil, file: URL? = nil, completion: @escaping ((_ data: String?,_ error: Error?) -> Void)) {
+        indexImageWithRequestBuilder(modelId: modelId, tag: tag, file: file).execute { (response, error) -> Void in
             completion(response?.body, error)
         }
     }
@@ -184,24 +183,24 @@ open class DefaultAPI {
      - API Key:
        - type: apiKey x-api-key 
        - name: x-api-key
-     - parameter modelId: (query) Model ID 
+     - parameter modelId: (form)  (optional)
+     - parameter tag: (form)  (optional)
      - parameter file: (form)  (optional)
      - returns: RequestBuilder<String> 
      */
-    open class func indexImageWithRequestBuilder(modelId: String, file: URL? = nil) -> RequestBuilder<String> {
+    open class func indexImageWithRequestBuilder(modelId: String? = nil, tag: String? = nil, file: URL? = nil) -> RequestBuilder<String> {
         let path = "/index_image"
         let URLString = OpenAPIClientAPI.basePath + path
         let formParams: [String:Any?] = [
+            "model_id": modelId?.encodeToJSON(),
+            "tag": tag?.encodeToJSON(),
             "file": file?.encodeToJSON()
         ]
 
         let nonNullParameters = APIHelper.rejectNil(formParams)
         let parameters = APIHelper.convertBoolToString(nonNullParameters)
         
-        var url = URLComponents(string: URLString)
-        url?.queryItems = APIHelper.mapValuesToQueryItems([
-            "model_id": modelId.encodeToJSON()
-        ])
+        let url = URLComponents(string: URLString)
 
         let requestBuilder: RequestBuilder<String>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
 
@@ -255,12 +254,12 @@ open class DefaultAPI {
     /**
      Predict by Image
      
-     - parameter modelId: (query) Type your trained model id to predict. You get your model&#39;s id from Classify Dashboard. 
      - parameter file: (form)  (optional)
+     - parameter modelId: (form)  (optional)
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func tagLocalImage(modelId: String, file: URL? = nil, completion: @escaping ((_ data: Void?,_ error: Error?) -> Void)) {
-        tagLocalImageWithRequestBuilder(modelId: modelId, file: file).execute { (response, error) -> Void in
+    open class func tagLocalImage(file: URL? = nil, modelId: String? = nil, completion: @escaping ((_ data: Void?,_ error: Error?) -> Void)) {
+        tagLocalImageWithRequestBuilder(file: file, modelId: modelId).execute { (response, error) -> Void in
             if error == nil {
                 completion((), error)
             } else {
@@ -276,24 +275,22 @@ open class DefaultAPI {
      - API Key:
        - type: apiKey x-api-key 
        - name: x-api-key
-     - parameter modelId: (query) Type your trained model id to predict. You get your model&#39;s id from Classify Dashboard. 
      - parameter file: (form)  (optional)
+     - parameter modelId: (form)  (optional)
      - returns: RequestBuilder<Void> 
      */
-    open class func tagLocalImageWithRequestBuilder(modelId: String, file: URL? = nil) -> RequestBuilder<Void> {
+    open class func tagLocalImageWithRequestBuilder(file: URL? = nil, modelId: String? = nil) -> RequestBuilder<Void> {
         let path = "/predict"
         let URLString = OpenAPIClientAPI.basePath + path
         let formParams: [String:Any?] = [
-            "file": file?.encodeToJSON()
+            "file": file?.encodeToJSON(),
+            "model_id": modelId?.encodeToJSON()
         ]
 
         let nonNullParameters = APIHelper.rejectNil(formParams)
         let parameters = APIHelper.convertBoolToString(nonNullParameters)
         
-        var url = URLComponents(string: URLString)
-        url?.queryItems = APIHelper.mapValuesToQueryItems([
-            "model_id": modelId.encodeToJSON()
-        ])
+        let url = URLComponents(string: URLString)
 
         let requestBuilder: RequestBuilder<Void>.Type = OpenAPIClientAPI.requestBuilderFactory.getNonDecodableBuilder()
 

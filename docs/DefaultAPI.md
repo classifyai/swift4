@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**createNewModel**](DefaultAPI.md#createnewmodel) | **PUT** /models | Create New Model
 [**deleteModel**](DefaultAPI.md#deletemodel) | **DELETE** /models | Delete Model
 [**getModelsList**](DefaultAPI.md#getmodelslist) | **GET** /models | Get Models List
-[**indexByImageUrl**](DefaultAPI.md#indexbyimageurl) | **GET** /index_by_image_url | Index by Using Image URL
+[**indexByImageUrl**](DefaultAPI.md#indexbyimageurl) | **POST** /index_by_image_url | Index by Using Image URL
 [**indexImage**](DefaultAPI.md#indeximage) | **POST** /index_image | Index Local Image
 [**tagImageByUrl**](DefaultAPI.md#tagimagebyurl) | **GET** /predict_by_image_url | Tag Image by Using Image Url
 [**tagLocalImage**](DefaultAPI.md#taglocalimage) | **POST** /predict | Predict by Image
@@ -162,7 +162,7 @@ This endpoint does not need any parameter.
 
 # **indexByImageUrl**
 ```swift
-    open class func indexByImageUrl(modelId: String, imageUrl: String, completion: @escaping (_ data: String?, _ error: Error?) -> Void)
+    open class func indexByImageUrl(inlineObject: InlineObject, completion: @escaping (_ data: Void?, _ error: Error?) -> Void)
 ```
 
 Index by Using Image URL
@@ -174,11 +174,10 @@ Index by Using Image URL
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let modelId = "modelId_example" // String | Model ID
-let imageUrl = "imageUrl_example" // String | Image URL
+let inlineObject = inline_object(imageUrl: "imageUrl_example", tag: "tag_example", modelId: "modelId_example") // InlineObject | 
 
 // Index by Using Image URL
-DefaultAPI.indexByImageUrl(modelId: modelId, imageUrl: imageUrl) { (response, error) in
+DefaultAPI.indexByImageUrl(inlineObject: inlineObject) { (response, error) in
     guard error == nil else {
         print(error)
         return
@@ -194,12 +193,11 @@ DefaultAPI.indexByImageUrl(modelId: modelId, imageUrl: imageUrl) { (response, er
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **modelId** | **String** | Model ID | 
- **imageUrl** | **String** | Image URL | 
+ **inlineObject** | [**InlineObject**](InlineObject.md) |  | 
 
 ### Return type
 
-**String**
+Void (empty response body)
 
 ### Authorization
 
@@ -207,14 +205,14 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **indexImage**
 ```swift
-    open class func indexImage(modelId: String, file: URL? = nil, completion: @escaping (_ data: String?, _ error: Error?) -> Void)
+    open class func indexImage(modelId: String? = nil, tag: String? = nil, file: URL? = nil, completion: @escaping (_ data: String?, _ error: Error?) -> Void)
 ```
 
 Index Local Image
@@ -226,11 +224,12 @@ Index Local Image
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let modelId = "modelId_example" // String | Model ID
+let modelId = "modelId_example" // String |  (optional)
+let tag = "tag_example" // String |  (optional)
 let file = URL(string: "https://example.com")! // URL |  (optional)
 
 // Index Local Image
-DefaultAPI.indexImage(modelId: modelId, file: file) { (response, error) in
+DefaultAPI.indexImage(modelId: modelId, tag: tag, file: file) { (response, error) in
     guard error == nil else {
         print(error)
         return
@@ -246,7 +245,8 @@ DefaultAPI.indexImage(modelId: modelId, file: file) { (response, error) in
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **modelId** | **String** | Model ID | 
+ **modelId** | **String** |  | [optional] 
+ **tag** | **String** |  | [optional] 
  **file** | **URL** |  | [optional] 
 
 ### Return type
@@ -318,7 +318,7 @@ Void (empty response body)
 
 # **tagLocalImage**
 ```swift
-    open class func tagLocalImage(modelId: String, file: URL? = nil, completion: @escaping (_ data: Void?, _ error: Error?) -> Void)
+    open class func tagLocalImage(file: URL? = nil, modelId: String? = nil, completion: @escaping (_ data: Void?, _ error: Error?) -> Void)
 ```
 
 Predict by Image
@@ -330,11 +330,11 @@ Send a local image to tag
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let modelId = "modelId_example" // String | Type your trained model id to predict. You get your model's id from Classify Dashboard.
 let file = URL(string: "https://example.com")! // URL |  (optional)
+let modelId = "modelId_example" // String |  (optional)
 
 // Predict by Image
-DefaultAPI.tagLocalImage(modelId: modelId, file: file) { (response, error) in
+DefaultAPI.tagLocalImage(file: file, modelId: modelId) { (response, error) in
     guard error == nil else {
         print(error)
         return
@@ -350,8 +350,8 @@ DefaultAPI.tagLocalImage(modelId: modelId, file: file) { (response, error) in
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **modelId** | **String** | Type your trained model id to predict. You get your model&#39;s id from Classify Dashboard. | 
  **file** | **URL** |  | [optional] 
+ **modelId** | **String** |  | [optional] 
 
 ### Return type
 

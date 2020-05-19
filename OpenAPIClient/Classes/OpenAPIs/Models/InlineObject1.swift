@@ -11,10 +11,20 @@ import Foundation
 public struct InlineObject1: Codable { 
 
 
+    public var modelId: String?
+    public var tag: String?
     public var file: URL?
 
-    public init(file: URL?) {
+    public init(modelId: String?, tag: String?, file: URL?) {
+        self.modelId = modelId
+        self.tag = tag
         self.file = file
+    }
+
+    public enum CodingKeys: String, CodingKey { 
+        case modelId = "model_id"
+        case tag
+        case file
     }
 
 }
